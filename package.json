@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "installDB": "dropdb --if-exists se2proj && createdb -h localhost se2proj && psql -h localhost -q -d se2proj < ./sql/install.sql",
-    "installDB-Win": "psql -c \"DROP DATABASE IF EXISTS se2proj; CREATE DATABASE se2proj;\""
+    "installDB": "dropdb --if-exists se2proj && createdb -h localhost se2proj && psql -h localhost -q -d se2proj < ./sql/create_table.sql",
+    "installDB-Win": "psql -c \"DROP DATABASE IF EXISTS se2proj; CREATE DATABASE se2proj;\" psql -h localhost -d se2proj < ./sql/create_table.sql"
   },
   "repository": {
     "type": "git",
