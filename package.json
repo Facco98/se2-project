@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "installDB": "dropdb --if-exists se2proj && createdb -h localhost se2proj && psql -h localhost -q -d se2proj < ./sql/create_table.sql",
-    "installDB-Win": "psql -c \"DROP DATABASE IF EXISTS se2proj; CREATE DATABASE se2proj;\" psql -h localhost -d se2proj < ./sql/create_table.sql"
+    "installDB-Win": "psql -c \"DROP DATABASE IF EXISTS se2proj; CREATE DATABASE se2proj;\" psql -h localhost -d se2proj < ./sql/create_table.sql",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
     "pg": "^7.14.0"
+  },
+  "constants": {
+    "port": 3000
   }
 }
