@@ -21,10 +21,12 @@
   "homepage": "https://github.com/Facco98/se2-project#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.0",
     "pg": "^7.14.0"
   },
   "constants": {
-    "port": 3000
+    "port": 3000,
+    "tokenLifeTime": "24h"
   }
 }

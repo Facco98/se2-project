@@ -1,6 +1,8 @@
-// Import del pacchetto contenente il database manager layer.
+// Import del pacchetto contenente il database manager layer e il pacchetto del
+// middlewere per i token.
 const dbmanager = require('./sql/dbmanager');
 const express = require('express');
+const auth = require('./middlewere/auth');
 
 // Leggo la porta direttamente dal file package.json; se non è presente
 // utilizzo la porta 3001
@@ -29,11 +31,15 @@ async function main(){
   let envoirment = {
 
     db: db,
-    app: app
+    app: app,
+    createToken: auth.createToken
 
   };
 
   loadServices(envoirment);
+
+  // Impongo l'uso del middlewere per il controllo dei token a tutte le route.
+  app.use(auth.checkTokenMiddlewere);
 
   app.listen(port, () => {
 

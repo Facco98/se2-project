@@ -1,11 +1,11 @@
 // Import dei dati di accesso al database e del driver per collegarmi a Postgres
-const database = require('../variables');
+const variables = require('../variables');
 const { Pool } = require('pg');
 
 async function createDBManager(){
 
   // Creo il client e aspetto che si colleghi.
-  let client = new Pool(database);
+  let client = new Pool(variables.databaseInfo);
   await client.connect();
 
   let dbmanager = {
