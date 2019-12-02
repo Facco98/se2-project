@@ -2,11 +2,11 @@
 DROP delle tabelle, se esistono.
 */
 
-DROP TABLE IF EXISTS utente;
-DROP TABLE IF EXISTS staff;
-DROP TABLE IF EXISTS aula;
 DROP TABLE IF EXISTS richiesta;
 DROP TABLE IF EXISTS prenotazione;
+DROP TABLE IF EXISTS aula;
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS utente;
 
 
 /*

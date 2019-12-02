@@ -44,6 +44,111 @@ async function createDBManager(){
 
     },
 
+    getRequest: async (requestID) => {
+
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id = &1;';
+      let result = await client.query(queryString, [requestID]);
+      if ( result.rows.length === 1 )
+        return result.rows[0]
+      else
+        return false;
+
+    },
+
+    addRequest: async (userID, roomID, reason = '', beginning, lapse) => {
+
+      const queryString = 'INSERT INTO richiesta(id_utente, id_aula, motivazione, inizio, durata) VALUES($1, $2, $3, $4, $5);'
+      let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse]);
+
+    },
+
+    removeRequest: async (requestID) => {
+
+      const queryString = 'DELETE FROM richiesta WHERE id = $1;'
+      let result = await client.query(queryString, [requestID]);
+
+    },
+
+    updateRequest: async (requestID, userID, roomID, reason = '', beginning, lapse) => {
+
+      const queryString = 'UPDATE richiesta SET id_utente = $1, id_aula = &2, motivazione = $3, inizio = &4, durata = &5  WHERE id = &6;'
+      let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse, requestID]);
+
+    },
+
+    listUserRequest: async (userID) => {
+
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = &1;';
+      let result = await client.query(queryString, [userID]);
+      return result.rows;
+
+    },
+
+    numberUserRequest: async (userID) => {
+
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = &1;';
+      let result = await client.query(queryString, [userID]);
+      return result.rows.length;
+
+    },
+
+    getReservation: async (reservationID) => {
+
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id = &1;';
+      let result = await client.query(queryString, [reservationID]);
+      if ( result.rows.length === 1 )
+        return result.rows[0]
+      else
+        return false;
+
+    },
+
+    removeReservation: async (reservationID) => {
+
+      const queryString = 'DELETE FROM prenotazione WHERE id = $1;'
+      let result = await client.query(queryString, [reservationID]);
+
+    },
+
+    updateReservation: async (reservationID, requestID, staffID, note) => {
+
+      const queryString = 'UPDATE prenotazione SET id_staff = $1, id_richiesta = &2, note = $3 WHERE id = &4;'
+      let result = await client.query(queryString, [requestID, staffID, note, reservationID]);
+
+    },
+
+    listStaffReservation: async (staffID) => {
+
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = &1;';
+      let result = await client.query(queryString, [staffID]);
+      return result.rows;
+
+    },
+
+    numberStaffReservation: async (staffID) => {
+
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = &1;';
+      let result = await client.query(queryString, [staffID]);
+      return result.rows.length;
+
+    },
+
+    listReservation: async () => {
+
+      const queryString = 'SELECT * FROM prenotazione;';
+      let result = await client.query(queryString);
+      return result.rows;
+
+    },
+
+    listRooms: async () => {
+
+      const queryString = 'SELECT * FROM aula;';
+      let result = await client.query(queryString);
+      return result.rows;
+
+    },
+
     closeConnection: async () => {
 
       // Aspetto che la connessione venga chiusa.
