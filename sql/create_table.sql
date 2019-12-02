@@ -1,9 +1,17 @@
+/*
+DROP delle tabelle, se esistono.
+*/
+
 DROP TABLE IF EXISTS utente;
 DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS aula;
 DROP TABLE IF EXISTS richiesta;
 DROP TABLE IF EXISTS prenotazione;
 
+
+/*
+Creazione delle tabelle.
+*/
 CREATE TABLE utente (
     id          SERIAL PRIMARY KEY,
     nome        VARCHAR(50) NOT NULL,
@@ -37,8 +45,15 @@ CREATE TABLE prenotazione (
     id              SERIAL PRIMARY KEY,
     id_staff        SERIAL REFERENCES staff(id_utente) NOT NULL,
     id_richiesta    SERIAL REFERENCES richiesta(id) NOT NULL,
-    id_aula         SERIAL REFERENCES aula(id) NOT NULL,
-    note            TEXT   NOT NULL,
-    inizio          TIMESTAMP NOT NULL,
-    duarat          INTERVAL NOT NULL
+    note            TEXT   NOT NULL
 );
+
+/*
+Inserimento dei dati 'fake' all'interno delle tabelle per motivi di test.
+*/
+INSERT INTO utente(id, nome, cognome, password, telefono, mail) VALUES (0, 'Claudio', 'Facchinetti', 'psw', '1234567890', 'cfacchinetti@example.com'),
+(1, 'Luca', 'Nicolli', 'psw', '1234567891', 'lnicolli@example.com');
+INSERT INTO staff(id_utente) VALUES(1);
+
+INSERT INTO aula(id, nome) VALUES(0, 'Aula studio C'), (1, 'Aula studio B');
+INSERT INTO richiesta(id_utente, id_aula, motivazione, inizio, durata) VALUES(0,0,'Tutorato matematica', NOW(), '2 hours');

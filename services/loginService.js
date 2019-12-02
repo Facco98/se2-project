@@ -33,8 +33,8 @@ module.exports.init = (envoirment) => {
     } else {
 
       // Rispondo con un errore.
-      responseObject.errorDescription = 'Username / password combination not found.';
-      resp.status(300);
+      responseObject.error = 'Username / password combination not found.';
+      resp.status(301);
 
     }
 

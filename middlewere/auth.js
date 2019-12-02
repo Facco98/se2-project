@@ -6,9 +6,7 @@ const jwt = require('jsonwebtoken');
 let createToken = (user) => {
 
   let mail = user.mail || user;
-  let token = jwt.sign({mail: mail}, variables.tokenSecret, {
-    expiresIn: process.env.npm_package_constants_tokenLifeTime
-  });
+  let token = jwt.sign(mail, variables.tokenSecret);
   return token;
 };
 
@@ -28,13 +26,13 @@ let checkToken = (req, res, next) => {
           valid: false,
           error: 'The token supplied is not valid'
         };
-        return res.json(err);
+        return res.status(302).json(responseObject);
 
 
       }
       else {
 
-        req.username = decoded;
+        req.mailFromToken = decoded;
         next();
 
       }
@@ -42,7 +40,7 @@ let checkToken = (req, res, next) => {
   }
   else {
 
-    return res.json({
+    return res.status(302).json({
       valid: false,
       error: 'No token supplied'
     });

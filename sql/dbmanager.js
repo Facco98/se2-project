@@ -18,6 +18,32 @@ async function createDBManager(){
 
     },
 
+    checkStaff: async (mail) => {
+
+      const queryString = 'SELECT * FROM staff WHERE staff.id_utente = (SELECT utente.id FROM utente WHERE utente.mail = $1);'
+      let result = await client.query(queryString, [mail]);
+      if ( result.rows.length === 1 )
+        return result.rows[0].id_utente
+      else
+        return false;
+
+    },
+
+    listRequests: async () => {
+
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id NOT IN (SELECT prenotazione.id_richiesta FROM prenotazione);';
+      let result = await client.query(queryString);
+      return result.rows;
+
+    },
+
+    acceptRequest: async (requestID, staffID, note = '') => {
+
+      const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, note) VALUES($1, $2, $3);'
+      let result = await client.query(queryString, [requestID, staffID, note]);
+
+    },
+
     closeConnection: async () => {
 
       // Aspetto che la connessione venga chiusa.
