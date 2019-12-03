@@ -5,7 +5,7 @@ info:
   description: A simple way to manage the common areas within NEST - Nuovo Studentato Trento
   license:
     name: MIT
-    url: https://github.com/Facco/se
+    url: https://github.com/Facco/se2-proj
 host: localhost
 basePath: /
 schemes:
@@ -55,6 +55,3 @@ paths:
               errorDescription:
                 type: string
                 description: The description of the error occurred.
-          
-        
-  

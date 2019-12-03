@@ -3,6 +3,7 @@
 const dbmanager = require('./sql/dbmanager');
 const express = require('express');
 const auth = require('./middlewere/auth');
+const bodyParser = require('body-parser');
 
 // Leggo la porta direttamente dal file package.json; se non è presente
 // utilizzo la porta 3001
@@ -40,6 +41,8 @@ async function main(){
 
   // Impongo l'uso del middlewere per il controllo dei token a tutte le route.
   app.use(auth.checkTokenMiddlewere);
+
+  app.use(bodyParser.json());
 
   app.listen(port, () => {
 
