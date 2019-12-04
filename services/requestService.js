@@ -61,6 +61,14 @@ module.exports.init = (envoirment) => {
 
   });
 
+  app.post('/requests', async(req, resp) => {
+    const request = req.body; // body json della richiesta
+    
+    
+    await dbmanager.addRequest(request.id_utente, request.id_aula, request.motivazione, request.inizio, request.durata);
+
+    resp.status(200).json({valid: true}); //invio risposta
+  });
 
 
 }
