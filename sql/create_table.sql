@@ -44,16 +44,19 @@ CREATE TABLE richiesta (
 CREATE TABLE prenotazione (
     id              SERIAL PRIMARY KEY,
     id_staff        SERIAL REFERENCES staff(id_utente) NOT NULL,
-    id_richiesta    SERIAL REFERENCES richiesta(id) NOT NULL,
-    note            TEXT   NOT NULL
+    id_utente   SERIAL REFERENCES utente(id) NOT NULL,
+    id_aula     SERIAL REFERENCES aula(id) NOT NULL,
+    motivazione TEXT NOT NULL,
+    inizio      TIMESTAMP NOT NULL,
+    durata      INTERVAL NOT NULL
 );
 
 /*
 Inserimento dei dati 'fake' all'interno delle tabelle per motivi di test.
 */
 INSERT INTO utente(id, nome, cognome, password, telefono, mail) VALUES (0, 'Claudio', 'Facchinetti', 'psw', '1234567890', 'cfacchinetti@example.com'),
-(1, 'Luca', 'Nicolli', 'psw', '1234567891', 'lnicolli@example.com');
+(1, 'Luca', 'Nicolli', 'psw', '1234567891', 'lnicolli@example.com'), (2, 'Filippo', 'Spaggiari', 'psw', '1234567891', 'fspaggiari@example.com');
 INSERT INTO staff(id_utente) VALUES(1);
 
 INSERT INTO aula(id, nome) VALUES(0, 'Aula studio C'), (1, 'Aula studio B');
-INSERT INTO richiesta(id_utente, id_aula, motivazione, inizio, durata) VALUES(0,0,'Tutorato matematica', NOW(), '2 hours');
+INSERT INTO richiesta(id_utente, id_aula, motivazione, inizio, durata) VALUES(2,0,'Tutorato matematica', NOW(), '2 hours');

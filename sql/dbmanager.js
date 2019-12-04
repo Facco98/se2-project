@@ -18,6 +18,16 @@ async function createDBManager(){
 
     },
 
+    getUserFromMail: async (mail) => {
+
+      let result = await client.query('SELECT * FROM utente WHERE mail = $1', [mail]);
+      if( result.rows.length === 1 )
+        return result.rows[0];
+      else
+        return false;
+
+    },
+
     checkStaff: async (mail) => {
 
       const queryString = 'SELECT * FROM staff WHERE staff.id_utente = (SELECT utente.id FROM utente WHERE utente.mail = $1);'
@@ -31,22 +41,28 @@ async function createDBManager(){
 
     listRequests: async () => {
 
-      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id NOT IN (SELECT prenotazione.id_richiesta FROM prenotazione);';
+      const queryString = 'SELECT * FROM richiesta;';
       let result = await client.query(queryString);
       return result.rows;
 
     },
 
-    acceptRequest: async (requestID, staffID, note = '') => {
+    acceptRequest: async (requestID, staffID) => {
 
-      const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, note) VALUES($1, $2, $3);'
-      let result = await client.query(queryString, [requestID, staffID, note]);
-
+      let request = await client.query('SELECT * FROM richiesta WHERE id = $1', [requestID]);
+      request = request.rows[0];
+      if( request ){
+        const queryString = 'INSERT INTO prenotazione(id_staff, id_utente, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
+        let res = await client.query(queryString, [staffID, request.id_utente, request.motivazione, request.id_aula, request.inizio, request.durata]);
+        await client.query('DELETE FROM richiesta WHERE id = $1', [requestID]);
+        return res.rowCount;
+      } else
+        return false;
     },
 
     getRequest: async (requestID) => {
 
-      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id = &1;';
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id = $1;';
       let result = await client.query(queryString, [requestID]);
       if ( result.rows.length === 1 )
         return result.rows[0]
@@ -59,6 +75,7 @@ async function createDBManager(){
 
       const queryString = 'INSERT INTO richiesta(id_utente, id_aula, motivazione, inizio, durata) VALUES($1, $2, $3, $4, $5);'
       let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse]);
+      return result.rowCount;
 
     },
 
@@ -66,19 +83,21 @@ async function createDBManager(){
 
       const queryString = 'DELETE FROM richiesta WHERE id = $1;'
       let result = await client.query(queryString, [requestID]);
+      return result.rowCount;
 
     },
 
     updateRequest: async (requestID, userID, roomID, reason = '', beginning, lapse) => {
 
-      const queryString = 'UPDATE richiesta SET id_utente = $1, id_aula = &2, motivazione = $3, inizio = &4, durata = &5  WHERE id = &6;'
-      let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse, requestID]);
+      const queryString = 'UPDATE richiesta SET id_utente = $1, id_aula = $2, motivazione = $3, inizio = $4, durata = $5  WHERE id = $6;'
+      let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse, requestID])
+      return result.rowCount;;
 
     },
 
     listUserRequest: async (userID) => {
 
-      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = &1;';
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = $1;';
       let result = await client.query(queryString, [userID]);
       return result.rows;
 
@@ -86,7 +105,7 @@ async function createDBManager(){
 
     numberUserRequest: async (userID) => {
 
-      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = &1;';
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id_utente = $1;';
       let result = await client.query(queryString, [userID]);
       return result.rows.length;
 
@@ -94,7 +113,7 @@ async function createDBManager(){
 
     getReservation: async (reservationID) => {
 
-      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id = &1;';
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id = $1;';
       let result = await client.query(queryString, [reservationID]);
       if ( result.rows.length === 1 )
         return result.rows[0]
@@ -107,19 +126,20 @@ async function createDBManager(){
 
       const queryString = 'DELETE FROM prenotazione WHERE id = $1;'
       let result = await client.query(queryString, [reservationID]);
+      return result.rowCount;
 
     },
 
     updateReservation: async (reservationID, requestID, staffID, note) => {
 
-      const queryString = 'UPDATE prenotazione SET id_staff = $1, id_richiesta = &2, note = $3 WHERE id = &4;'
+      const queryString = 'UPDATE prenotazione SET id_staff = $1, id_richiesta = $2, note = $3 WHERE id = $4;'
       let result = await client.query(queryString, [requestID, staffID, note, reservationID]);
 
     },
 
     listStaffReservation: async (staffID) => {
 
-      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = &1;';
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = $1;';
       let result = await client.query(queryString, [staffID]);
       return result.rows;
 
@@ -127,7 +147,7 @@ async function createDBManager(){
 
     numberStaffReservation: async (staffID) => {
 
-      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = &1;';
+      const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id_staff = $1;';
       let result = await client.query(queryString, [staffID]);
       return result.rows.length;
 

@@ -27,7 +27,8 @@ module.exports.init = (envoirment) => {
 
     if(reservation != false) //se c'è -> controllo se utente è giusto
     {
-      if(reservation.id_utente == userId || (await dbmanager.checkStaff(mail)) != false) //controllo l'utente
+      let isStaff = await dbmanager.checkStaff(mail) != false;
+      if(reservation.id_utente == userId || (isStaff)) //controllo l'utente
       {
         await dbmanager.removeReservation(reservationID); //elimino prenotazione
         resp.status(200).json({valid: true}); //invio risposta

@@ -37,7 +37,6 @@ module.exports.init = (envoirment) => {
 
     let requestID = parseInt(req.params.id);
     let mail = req.mailFromToken;
-    let note = req.query.notes;
 
     let staff = await dbmanager.checkStaff(mail);
 
@@ -45,7 +44,7 @@ module.exports.init = (envoirment) => {
 
     if( staff ){
 
-      let result = await dbmanager.acceptRequest(requestID, staff, note);
+      let result = await dbmanager.acceptRequest(requestID, staff);
       responseObject.valid = result;
 
       resp.status(200);
