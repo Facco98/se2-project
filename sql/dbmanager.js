@@ -111,6 +111,21 @@ async function createDBManager(){
 
     },
 
+    checkReservationOverlap: async (id_aula, inizio, durata) => {
+
+      const queryString = 'SELECT id FROM prenotazione WHERE prenotazione.id_aula = $1 AND (prenotazione.inizio, prenotazione.durata) overlaps ($2, $3);';
+      let result = await client.query(queryString, [id_aula, inizio, durata]);
+      if (result.rows.length === 0)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    },
+
+
     getReservation: async (reservationID) => {
 
       const queryString = 'SELECT * FROM prenotazione WHERE prenotazione.id = $1;';
