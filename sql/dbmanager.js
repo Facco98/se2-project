@@ -91,7 +91,7 @@ async function createDBManager(){
 
       const queryString = 'UPDATE richiesta SET id_utente = $1, id_aula = $2, motivazione = $3, inizio = $4, durata = $5  WHERE id = $6;'
       let result = await client.query(queryString, [userID, roomID, reason, beginning, lapse, requestID])
-      return result.rowCount;;
+      return result.rowCount;
 
     },
 
@@ -176,11 +176,40 @@ async function createDBManager(){
 
     },
 
+    listReservationByIdInterval: async (roomID, beginning, lapse) => {
+
+      // seleziono tutte le prenotazioni che hanno inizio tra beginning e lapse
+      // const queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1 AND (p.inizio BETWEEN timestamp $2 AND (timestamp $2 + interval $3));';
+      const queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1 AND (p.inizio BETWEEN $2 AND ($2 + $3));';
+      let result = await client.query(queryString, [roomID, beginning, lapse]);
+      if (result.rows.length === 0)
+      {
+        return false;
+      }
+      else
+      {
+        return result.rows;
+      }
+    },
+
     listRooms: async () => {
 
       const queryString = 'SELECT * FROM aula;';
       let result = await client.query(queryString);
       return result.rows;
+
+    },
+
+    getRoomById: async (roomID) => {
+
+      const queryString = 'SELECT * FROM aula WHERE aula.id = $1;';
+      let result = await client.query(queryString, [roomID]);
+      if (result.rows.length === 0){
+        return false;
+      }
+      else{
+        return true;
+      }
 
     },
 

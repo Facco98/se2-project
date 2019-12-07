@@ -45,4 +45,31 @@ module.exports.init = (envoirment) => {
 
   });
 
+  // lista impegni aula
+  app.get('/reservation/room/:id_aula', async (req, resp) => {
+
+    const roomID = req.params.id_aula; // ottengo id_aula
+    const beginning = req.query.inizio; // inizio dell'intervallo
+    const lapse = req.query.durata; // durata dell'intervallo
+
+    const isRoomValid = await dbmanager.getRoomById(roomID); // controllo se l'aula è esistente
+    
+    if(isRoomValid){ // se sì
+      
+      // ottengo lista prenotazioni
+      const listReservation = await dbmanager.listReservationByIdInterval(roomID, beginning, lapse);
+
+      if(listReservation != false){ 
+        resp.status(200).json({valid: true, listReservation}); // invio lista prenotazione
+      }
+      else{
+        resp.status(404).json({valid: false, error: 'There is no reservation for this room'});
+      }
+
+    }
+    else{
+      resp.status(404).json({valid: false, error: 'Room id not valid'});
+    }
+  });
+
 };

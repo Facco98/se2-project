@@ -61,15 +61,25 @@ module.exports.init = (envoirment) => {
 
   });
 
-  app.post('/requests', async(req, resp) => {
+  // prenotazione aula
+  app.post('/requests/', async(req, resp) => {
+    
     const request = req.body; // body json della richiesta
 
+    // controllo se c'è overlap della prenotazione con quelli già esistenti
+    const isOverlap = await dbmanager.checkReservationOverlap(request.id_aula, request.inizio, request.durata); 
 
-    const nRowModified = await dbmanager.addRequest(request.id_utente, request.id_aula, request.motivazione, request.inizio, request.durata);
-    if (nRowModified != 0){
-      resp.status(200).json({valid: true}); //invio risposta
-    } else {
-      resp.status(400).json({valid: false, error: 'Could not add your request'});
+    if(!isOverlap){ // se non c'è overlap
+      const nRowModified = await dbmanager.addRequest(request.id_utente, request.id_aula, request.motivazione, request.inizio, request.durata);
+      
+      if (nRowModified != 0){
+        resp.status(200).json({valid: true}); //invio risposta
+      } else {
+        resp.status(400).json({valid: false, error: 'Could not add your request'});
+      }
+    }
+    else{
+      resp.status(400).json({valid: false, error: 'There may be overlap with other reservation or the room id is not valid'});
     }
 
   });
