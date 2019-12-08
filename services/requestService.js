@@ -63,15 +63,15 @@ module.exports.init = (envoirment) => {
 
   // prenotazione aula
   app.post('/requests/', async(req, resp) => {
-    
+
     const request = req.body; // body json della richiesta
 
     // controllo se c'è overlap della prenotazione con quelli già esistenti
-    const isOverlap = await dbmanager.checkReservationOverlap(request.id_aula, request.inizio, request.durata); 
+    const isOverlap = await dbmanager.checkReservationOverlap(request.id_aula, request.inizio, request.durata);
 
     if(!isOverlap){ // se non c'è overlap
       const nRowModified = await dbmanager.addRequest(request.id_utente, request.id_aula, request.motivazione, request.inizio, request.durata);
-      
+
       if (nRowModified != 0){
         resp.status(200).json({valid: true}); //invio risposta
       } else {

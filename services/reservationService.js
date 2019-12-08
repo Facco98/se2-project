@@ -4,16 +4,6 @@ module.exports.init = (envoirment) => {
   let app = envoirment.app;
   let dbmanager = envoirment.db;
 
-  app.post('/reserve/:id', (req, resp) => {
-
-    // Recupero l'id della stanza da prenotare.
-    let id = req.params.id;
-
-    // Risposta di default.
-    resp.status(400).send('Ups, cannot reserve room with id ' +id);
-
-  });
-
   //gestire cancellazione prenotazione
   app.delete('/reservation/:id', async (req, resp) => {
 
@@ -53,17 +43,14 @@ module.exports.init = (envoirment) => {
     const lapse = req.query.durata; // durata dell'intervallo
 
     const isRoomValid = await dbmanager.getRoomById(roomID); // controllo se l'aula è esistente
-    
+
     if(isRoomValid){ // se sì
-      
+
       // ottengo lista prenotazioni
       const listReservation = await dbmanager.listReservationByIdInterval(roomID, beginning, lapse);
 
-      if(listReservation != false){ 
-        resp.status(200).json({valid: true, listReservation}); // invio lista prenotazione
-      }
-      else{
-        resp.status(404).json({valid: false, error: 'There is no reservation for this room'});
+      if(listReservation != false){
+        resp.status(200).json({valid: true, list: listReservation}); // invio lista prenotazione
       }
 
     }

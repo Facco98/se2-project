@@ -176,12 +176,21 @@ async function createDBManager(){
 
     },
 
-    listReservationByIdInterval: async (roomID, beginning, lapse) => {
+    listReservationByIdInterval: async (roomID, beginning = null, lapse = null) => {
 
       // seleziono tutte le prenotazioni che hanno inizio tra beginning e lapse
       // const queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1 AND (p.inizio BETWEEN timestamp $2 AND (timestamp $2 + interval $3));';
-      const queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1 AND (p.inizio BETWEEN $2 AND ($2 + $3));';
-      let result = await client.query(queryString, [roomID, beginning, lapse]);
+      let queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1';
+      let params = [roomID];
+      if( beginning && lapse ){
+
+        queryString += ' AND (p.inizio BETWEEN $2 AND ($2 + $3))';
+        params.push(beginning, lapse);
+
+      }
+      queryString +=';';
+      let result = await client.query(queryString, params);
+      console.log('result', result.rows);
       if (result.rows.length === 0)
       {
         return false;
