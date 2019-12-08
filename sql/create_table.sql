@@ -44,7 +44,7 @@ CREATE TABLE richiesta (
 CREATE TABLE prenotazione (
     id              SERIAL PRIMARY KEY,
     id_staff        SERIAL REFERENCES staff(id_utente) NOT NULL,
-    id_utente   SERIAL REFERENCES utente(id) NOT NULL,
+    id_richiesta   SERIAL REFERENCES richiesta(id) NOT NULL,
     id_aula     SERIAL REFERENCES aula(id) NOT NULL,
     motivazione TEXT NOT NULL,
     inizio      TIMESTAMP NOT NULL,

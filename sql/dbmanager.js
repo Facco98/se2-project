@@ -28,6 +28,29 @@ async function createDBManager(){
 
     },
 
+    reservationHistory: async (reservationID) => {
+
+      let result = await client.query("SELECT prenotazioneID, aulaPID, nomePAula, staffMotivazione, inizioP, durataP, staffID, staffNome, staffCognome, staffTelefono,staffMail, richiestaID, aulaRID, nomeRAula, utenteMotivazione, inizioR, durataR, utenteID, utenteNome, utenteCognome, utenteTelefono, utenteMail \
+                                        FROM \
+                                          ( \
+                                            SELECT prenotazione.id as prenotazioneID, prenotazione.id_richiesta as id_richiesta, prenotazione.id_aula aulaPID, aula.nome as nomePAula, prenotazione.motivazione as staffMotivazione, prenotazione.inizio as inizioP, prenotazione.durata as durataP, utente.id as staffID, utente.nome as staffNome, utente.cognome as staffCognome, utente.telefono as staffTelefono, utente.mail as staffMail \
+                                            FROM prenotazione INNER JOIN aula ON id_aula = aula.id  INNER JOIN utente ON utente.id = prenotazione.id_staff \
+                                          ) as A \
+                                          INNER JOIN \
+                                          ( \
+                                            SELECT richiesta.id as richiestaID, richiesta.id_aula aulaRID, aula.nome as nomeRAula, richiesta.motivazione as utenteMotivazione, richiesta.inizio as inizioR, richiesta.durata as durataR, utente.id as utenteID, utente.nome as utenteNome, utente.cognome as utenteCognome, utente.telefono as utenteTelefono, utente.mail as utenteMail \
+                                            FROM richiesta INNER JOIN aula ON richiesta.id_aula = aula.id  INNER JOIN utente ON utente.id = richiesta.id_utente \
+                                          ) as B  \
+                                          ON A.id_richiesta = B.richiestaID \
+                                        WHERE prenotazioneID = $1",
+                                        [reservationID]);
+      if( result.rows.length === 1 )
+        return result.rows[0];
+      else
+        return false;
+
+    },
+
     checkStaff: async (mail) => {
 
       const queryString = 'SELECT * FROM staff WHERE staff.id_utente = (SELECT utente.id FROM utente WHERE utente.mail = $1);'
