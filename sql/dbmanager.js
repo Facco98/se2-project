@@ -29,7 +29,7 @@ async function createDBManager(){
     },
 
     reservationHistory: async (reservationID) => {
-
+      /*
       let result = await client.query("SELECT prenotazioneID, aulaPID, nomePAula, staffMotivazione, inizioP, durataP, staffID, staffNome, staffCognome, staffTelefono,staffMail, richiestaID, aulaRID, nomeRAula, utenteMotivazione, inizioR, durataR, utenteID, utenteNome, utenteCognome, utenteTelefono, utenteMail \
                                         FROM \
                                           ( \
@@ -44,6 +44,22 @@ async function createDBManager(){
                                           ON A.id_richiesta = B.richiestaID \
                                         WHERE prenotazioneID = $1",
                                         [reservationID]);
+                                        */
+      let result = await client.query("SELECT p.id as prenotazioneID, p.id_aula aulaPID, a1.nome as nomePAula, p.motivazione as staffMotivazione, p.inizio as inizioP, p.durata as durataP, u1.id as staffID, u1.nome as staffNome, u1.cognome as staffCognome, u1.telefono as staffTelefono, u1.mail as staffMail, richiesta.id as richiestaID, richiesta.id_aula aulaRID, a2.nome as nomeRAula, richiesta.motivazione as utenteMotivazione, richiesta.inizio as inizioR, richiesta.durata as durataR, u2.id as utenteID, u2.nome as utenteNome, u2.cognome as utenteCognome, u2.telefono as utenteTelefono, u2.mail as utenteMail \
+                                        FROM (SELECT * FROM prenotazione WHERE id = $1) as p INNER JOIN aula as a1 ON id_aula = a1.id  INNER JOIN utente as u1 ON u1.id = p.id_staff INNER JOIN richiesta ON p.id_richiesta = richiesta.id INNER JOIN aula as a2 ON richiesta.id_aula = a2.id  INNER JOIN utente as u2 ON u2.id = richiesta.id_utente"
+                                        ,[reservationID]);
+      if( result.rows.length === 1 )
+        return result.rows[0];
+      else
+        return false;
+
+    },
+
+    reservationInfo: async (reservationID) => {
+  
+      let result = await client.query("SELECT p.motivazione as staffMotivazione, p.inizio as inizioP, p.durata as durataP, u1.id as staffID, u1.nome as staffNome, u1.cognome as staffCognome, richiesta.id as richiestaID, u2.id as utenteID, u2.nome as utenteNome, u2.cognome as utenteCognome \
+                                        FROM (SELECT * FROM prenotazione WHERE id = $1) as p INNER JOIN aula as a1 ON id_aula = a1.id  INNER JOIN utente as u1 ON u1.id = p.id_staff INNER JOIN richiesta ON p.id_richiesta = richiesta.id INNER JOIN aula as a2 ON richiesta.id_aula = a2.id  INNER JOIN utente as u2 ON u2.id = richiesta.id_utente"
+                                        ,[reservationID]);
       if( result.rows.length === 1 )
         return result.rows[0];
       else
@@ -70,13 +86,22 @@ async function createDBManager(){
 
     },
 
-    acceptRequest: async (requestID, staffID) => {
+    acceptRequest: async (requestID, staffID, reason = "", idRoom = false, beginning = false, lapse = false) => {
 
       let request = await client.query('SELECT * FROM richiesta WHERE id = $1', [requestID]);
       request = request.rows[0];
+      if (idRoom == false) {
+        idRoom = request.id_aula;
+      }
+      if (beginning == false) {
+        beginning = request.inizio;
+      }
+      if (lapse == false) {
+        lapse = request.durata;
+      }
       if( request ){
-        const queryString = 'INSERT INTO prenotazione(id_staff, id_utente, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
-        let res = await client.query(queryString, [staffID, request.id_utente, request.motivazione, request.id_aula, request.inizio, request.durata]);
+        const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
+        let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
         await client.query('DELETE FROM richiesta WHERE id = $1', [requestID]);
         return res.rowCount;
       } else
