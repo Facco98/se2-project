@@ -1,12 +1,11 @@
 // Importo ciò che serve per gestire i JWT.
-const variables = require('../variables');
 const jwt = require('jsonwebtoken');
 
 // Funzione che si occupa di firmare il token a partire dall'utente.
 let createToken = (user) => {
 
   let mail = user.mail || user;
-  let token = jwt.sign(mail, variables.tokenSecret);
+  let token = jwt.sign(mail, process.env.TokenSecret);
   return token;
 };
 
@@ -19,7 +18,7 @@ let checkToken = (req, res, next) => {
   }
 
   if( token && token !== '' ) {
-    jwt.verify(token, variables.tokenSecret, (err, decoded) =>{
+    jwt.verify(token, process.env.TokenSecret, (err, decoded) =>{
 
       if( err ){
         let responseObject = {
@@ -54,7 +53,7 @@ let checkToken = (req, res, next) => {
 let wrapper = (req, res, next) => {
 
   let contained = false;
-  for( let safePath of variables.safePaths ){
+  for( let safePath of process.env.safePaths.split(',') ){
 
     contained = req.path.startsWith(safePath);
 

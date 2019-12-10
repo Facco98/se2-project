@@ -1,11 +1,10 @@
 // Import dei dati di accesso al database e del driver per collegarmi a Postgres
-const variables = require('../variables');
 const { Pool } = require('pg');
 
 async function createDBManager(){
 
   // Creo il client e aspetto che si colleghi.
-  let client = new Pool(variables.databaseInfo);
+  let client = new Pool();
   await client.connect();
 
   let dbmanager = {
@@ -56,7 +55,7 @@ async function createDBManager(){
     },
 
     reservationInfo: async (reservationID) => {
-  
+
       let result = await client.query("SELECT p.motivazione as staffMotivazione, p.inizio as inizioP, p.durata as durataP, u1.id as staffID, u1.nome as staffNome, u1.cognome as staffCognome, richiesta.id as richiestaID, u2.id as utenteID, u2.nome as utenteNome, u2.cognome as utenteCognome \
                                         FROM (SELECT * FROM prenotazione WHERE id = $1) as p INNER JOIN aula as a1 ON id_aula = a1.id  INNER JOIN utente as u1 ON u1.id = p.id_staff INNER JOIN richiesta ON p.id_richiesta = richiesta.id INNER JOIN aula as a2 ON richiesta.id_aula = a2.id  INNER JOIN utente as u2 ON u2.id = richiesta.id_utente"
                                         ,[reservationID]);
