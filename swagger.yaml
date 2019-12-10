@@ -55,3 +55,132 @@ paths:
               errorDescription:
                 type: string
                 description: The description of the error occurred.
+
+  /reservation/{id}:
+    get:
+      summary: View reservation.
+      description: View a specific reservation of a room.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          minimum: 1
+          description: The id of the reservation you want to view.
+      responses:
+        200:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if you can view the details of the reservation
+              motivazione:
+                type: string
+                description: Tells you the reason why the room was reserved.
+              inizio:
+                type: string
+                description: The beginning of the reservation
+              durata:
+                type: string
+                description: The lapse of the reservation.
+        400:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+                valid:
+                  type: boolean
+                  description: Tells you if you can view the details of the reservation.
+                error:
+                  type: string
+                  description: The description of the error occurred.
+    delete:
+      summary: Delete reservation
+      description: Deletes the reservation.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          minimum: 1
+          description: The id of the reservation you want to delete.
+      responses:
+        200:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if the reservation was deleted correctly.
+        401:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+                valid:
+                  type: boolean
+                  description: Tells you if the request was valid or not.
+                error:
+                  type: string
+                  description: The description of the error occurred.
+        404:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if the request was valid or not.
+              errorDescription:
+                type: string
+                description: The description of the error occurred.
+
+  /reservation/room/{id_aula}:
+    get:
+      summary: Reserve a room
+      description: Reserves a room for a user.
+      parameters:
+        - in: path
+          name: id_aula
+          required: true
+          type: integer
+          minimum: 1
+          description: The id of the room you want to reserve.
+        - in: query
+          name: inizio
+          required: true
+          type: string
+          minimum: 1
+          description: The beginning of the reservation
+        - in: query
+          name: durata
+          required: true
+          type: string
+          minimum: 1
+          description: The lapse of the reservation.
+      responses:
+        200:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if the room was reserved correctly.
+              list:
+                type: array
+                description: Tells you the reservations currently valid.
+        404:
+          description: A response Object.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if the request was valid or not.
+              errorDescription:
+                type: string
+                description: The description of the error occurred.
