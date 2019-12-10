@@ -59,4 +59,40 @@ module.exports.init = (envoirment) => {
     }
   });
 
+  //visualizzare singolo impegno dell'aula
+  app.get('/reservation/:id', async (req, resp) => {
+
+    let mail = req.mailFromToken;
+    let isStaff = await dbmanager.checkStaff(mail);
+    let reservation_id = req.params.id;
+
+    let responseObject = {
+      valid: isStaff != false
+    };
+
+    const reservation = await dbmanager.reservationInfo(reservation_id);
+    if( reservation != false ){
+
+      if( isStaff ){
+
+        responseObject.reservation = reservation;
+
+      } else {
+
+        responseObject.reservation = {motivazione: reservation.staffMotivazione, inizio: reservation.inizioP, durata: reservation.durataP};
+
+      }
+
+      resp.status(200);
+
+    } else {
+
+      responseObject.error = 'Reservation ID is not valid.';
+      resp.status(400);
+
+    }
+    resp.json(responseObject);
+
+  });
+
 };
