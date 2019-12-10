@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 // Leggo la porta direttamente dal file package.json; se non è presente
 // utilizzo la porta 3001
-const port = process.env.npm_package_constants_port || 8080;
+const port = process.env.PORT || 8080;
 
 
 // Funzione che carica i servizi dinamicamente a partire dal percorso specificato.
