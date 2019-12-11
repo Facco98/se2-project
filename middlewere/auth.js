@@ -25,7 +25,7 @@ let checkToken = (req, res, next) => {
           valid: false,
           error: 'The token supplied is not valid'
         };
-        return res.status(302).json(responseObject);
+        return res.status(401).json(responseObject);
 
 
       }
@@ -39,7 +39,7 @@ let checkToken = (req, res, next) => {
   }
   else {
 
-    return res.status(302).json({
+    return res.status(401).json({
       valid: false,
       error: 'No token supplied'
     });

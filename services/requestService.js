@@ -75,7 +75,7 @@ module.exports.init = (envoirment) => {
       if (nRowModified != 0){
         resp.status(200).json({valid: true}); //invio risposta
       } else {
-        resp.status(400).json({valid: false, error: 'Could not add your request'});
+        resp.status(500).json({valid: false, error: 'Could not add your request'});
       }
     }
     else{
