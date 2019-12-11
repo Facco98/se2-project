@@ -223,11 +223,17 @@ async function createDBManager(){
 
     },
 
-    listReservationByIdInterval: async (roomID, beginning = null, lapse = null) => {
+    listReservationByIdInterval: async (roomID, beginning = null, lapse = null, isStaff) => {
 
-      // seleziono tutte le prenotazioni che hanno inizio tra beginning e lapse
-      // const queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1 AND (p.inizio BETWEEN timestamp $2 AND (timestamp $2 + interval $3));';
-      let queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1';
+      let queryString = '';
+      
+      if(isStaff != false){ // se l'utente è uno staff
+        queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1'; // richiedo tutti i dati
+      }
+      else{ // altrimenti chiedo solo motivazione, inizio e durata
+        queryString = 'SELECT motivazione, inizio, durata FROM prenotazione p WHERE p.id_aula = $1'; 
+      }
+      
       let params = [roomID];
       if( beginning && lapse ){
 

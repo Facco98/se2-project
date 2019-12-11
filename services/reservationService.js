@@ -41,16 +41,21 @@ module.exports.init = (envoirment) => {
     const roomID = req.params.id_aula; // ottengo id_aula
     const beginning = req.query.inizio; // inizio dell'intervallo
     const lapse = req.query.durata; // durata dell'intervallo
+    const mail = req.mailFromToken; // email utente
 
     const isRoomValid = await dbmanager.getRoomById(roomID); // controllo se l'aula è esistente
 
     if(isRoomValid){ // se sì
+      
+      const isStaff = await dbmanager.checkStaff(mail); 
+      
+      // ottengo lista prenotazioni, passo anche isStaff per ottenere la lista giusta 
+      // se isStaff non è falso deve ritornare una lista con tutte le informazioni
+      // altrimenti solo motivazione, inizio e durata
+      const listReservation = await dbmanager.listReservationByIdInterval(roomID, beginning, lapse, isStaff);
 
-      // ottengo lista prenotazioni
-      const listReservation = await dbmanager.listReservationByIdInterval(roomID, beginning, lapse);
-
-      if(listReservation != false){
-        resp.status(200).json({valid: true, list: listReservation}); // invio lista prenotazione
+      if((listReservation != false)){ 
+        resp.status(200).json({valid: true, list: listReservation});
       }
 
     }
