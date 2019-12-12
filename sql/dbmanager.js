@@ -109,8 +109,8 @@ async function createDBManager(){
       if( request ){
         if( result.rows.length === 1 ){
           const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
-          let request = await client.query('DELETE FROM richiesta WHERE richiesta.id NOT IN( SELECT prenotazione.id_richiesta FROM prenotazione ) AND richiesta.id_aula = $1 AND richiesta.id != $1 AND (richiesta.inizio, richiesta.durata) OVERLAPS ( TIMESTAMP $2, INTERVAL $3);', [requestID, beginning, lapse]);
           let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
+          let request = await client.query('DELETE FROM richiesta WHERE richiesta.id NOT IN( SELECT prenotazione.id_richiesta FROM prenotazione ) AND richiesta.id_aula = $1 AND (richiesta.inizio, richiesta.durata) OVERLAPS ( TIMESTAMP $2, INTERVAL $3);', [requestID, beginning, lapse]);
           return res.rowCount;
         }
       } else
