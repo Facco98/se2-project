@@ -95,7 +95,7 @@ async function createDBManager(){
 
     acceptRequest: async (requestID, staffID, reason = "", idRoom = false, beginning = false, lapse = false) => {
 
-      let request = await client.query('SELECT * FROM richiesta WHERE id = $1', [requestID]);
+      let request = await client.query('SELECT * FROM richiesta WHERE id = $1 AND richiesta.id NOT IN( SELECT prenotazione.id_richiesta FROM prenotazione );', [requestID]);
       request = request.rows[0];
       if (idRoom == false) {
         idRoom = request.id_aula;
@@ -107,9 +107,12 @@ async function createDBManager(){
         lapse = request.durata;
       }
       if( request ){
-        const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
-        let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
-        return res.rowCount;
+        if( result.rows.length === 1 ){
+          const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
+          let request = await client.query('DELETE FROM richiesta WHERE richiesta.id NOT IN( SELECT prenotazione.id_richiesta FROM prenotazione ) AND richiesta.id_aula = $1 AND (richiesta.inizio, richiesta.durata) OVERLAPS ( TIMESTAMP $2, INTERVAL $3);', [requestID, beginning, lapse]);
+          let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
+          return res.rowCount;
+        }
       } else
         return false;
     },
