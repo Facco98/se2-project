@@ -53,17 +53,19 @@ module.exports.init = (envoirment) => {
       const isRoomValid = await dbmanager.getRoomById(roomID); // controllo se l'aula è esistente
 
       if(isRoomValid){ // se sì
-        
-        const isStaff = await dbmanager.checkStaff(mail); 
-        
-        // ottengo lista prenotazioni, passo anche isStaff per ottenere la lista giusta 
+
+        let isStaff;
+        if( mail )
+          isStaff = await dbmanager.checkStaff(mail);
+        else
+          isStaff = false;
+
+        // ottengo lista prenotazioni, passo anche isStaff per ottenere la lista giusta
         // se isStaff non è falso deve ritornare una lista con tutte le informazioni
         // altrimenti solo motivazione, inizio e durata
         const listReservation = await dbmanager.listReservationByIdInterval(roomID, beginning, lapse, isStaff);
 
-        if((listReservation != false)){ 
-          resp.status(200).json({valid: true, list: listReservation});
-        }
+        resp.status(200).json({valid: true, list: listReservation});
 
       }
       else{
@@ -72,6 +74,7 @@ module.exports.init = (envoirment) => {
 
     }catch(err){
       resp.status(500).json({valid: false, error: 'Internal Server Error'});
+      console.log(err);
     }
   });
 
@@ -109,7 +112,7 @@ module.exports.init = (envoirment) => {
 
       }
       resp.json(responseObject);
-      
+
     }catch(err){
       resp.status(500).json({valid: false, error: 'Internal Server Error'});
     }

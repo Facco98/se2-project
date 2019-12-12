@@ -3,13 +3,14 @@ const { Pool } = require('pg');
 
 async function createDBManager(){
 
+  let client = new Pool(variables.databaseInfo);
   try{
     // Creo il client e aspetto che si colleghi.
-    let client = new Pool();
+
     await client.connect();
-    
+
   }catch(err){
-    resp.status(500).json({valid: false, error: 'Internal Server Error'});
+    //resp.status(500).json({valid: false, error: 'Internal Server Error'});
   }
 
   let dbmanager = {
@@ -106,7 +107,6 @@ async function createDBManager(){
       if( request ){
         const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
         let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
-        await client.query('DELETE FROM richiesta WHERE id = $1', [requestID]);
         return res.rowCount;
       } else
         return false;
@@ -231,14 +231,14 @@ async function createDBManager(){
     listReservationByIdInterval: async (roomID, beginning = null, lapse = null, isStaff) => {
 
       let queryString = '';
-      
+
       if(isStaff != false){ // se l'utente è uno staff
         queryString = 'SELECT * FROM prenotazione p WHERE p.id_aula = $1'; // richiedo tutti i dati
       }
       else{ // altrimenti chiedo solo motivazione, inizio e durata
-        queryString = 'SELECT motivazione, inizio, durata FROM prenotazione p WHERE p.id_aula = $1'; 
+        queryString = 'SELECT motivazione, inizio, durata FROM prenotazione p WHERE p.id_aula = $1';
       }
-      
+
       let params = [roomID];
       if( beginning && lapse ){
 
@@ -248,15 +248,7 @@ async function createDBManager(){
       }
       queryString +=';';
       let result = await client.query(queryString, params);
-      console.log('result', result.rows);
-      if (result.rows.length === 0)
-      {
-        return false;
-      }
-      else
-      {
-        return result.rows;
-      }
+      return result.rows;
     },
 
     listRooms: async () => {

@@ -55,7 +55,7 @@ let wrapper = (req, res, next) => {
   let contained = false;
   for( let safePath of process.env.safePaths.split(',') ){
 
-    contained = req.path.startsWith(safePath);
+    contained = req.path.startsWith(safePath) || contained;
 
   }
   if( !contained )
