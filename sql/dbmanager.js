@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 
 async function createDBManager(){
 
-  let client = new Pool(variables.databaseInfo);
+  let client = new Pool();
   try{
     // Creo il client e aspetto che si colleghi.
 
