@@ -19,7 +19,18 @@ Dopo aver clonato la repository, bisogna installare i componenti necessari.
   1. Creare il database a mano e copia-incollare il contenuto del fine `sql/install.sql` che contiene le query.
 
   2. Lanciare il comando `npm run installDB` se si è in ambiente Unix-like ( Linux e macOS ) oppure `npm run installDB-Win` se si è in ambiente Windows.  
-    **Attenzione**: Al fine di usare questo metodo ci si assicuri che il comando `psql` sia accessibile dall'utente corrente e che sia garantito l'accesso al database utilizzando tale utente. Questo può essere fatto su Linux con il comando `sudo -u postgres createuser -s $USER`; questo non dovrebbe essere necessario su macOS nel caso in cui PostgreSQL sia stato installato tramite Homebrew
+    **Attenzione**: Al fine di usare questo metodo ci si assicuri che il comando `psql` sia accessibile dall'utente corrente e che sia garantito l'accesso al database utilizzando tale utente. Questo può essere fatto su Linux con il comando `sudo -u postgres createuser -s $USER`; questo non dovrebbe essere necessario su macOS nel caso in cui PostgreSQL sia stato installato tramite Homebrew.
+
+  Per consentire la connessione al database e' necessario creare le variabili d'ambiente di PostgreSQL:
+    `bash
+    export PGHOST=host
+    export PGDATABASE=se2proj
+    export PGUSER=user
+    export PGPASSWORD=passwordDellUtente
+    `
 
 ### Lanciare il progetto
 Per lanciare il progetto è sufficiente usare il comando `npm start`.
+
+### Deploy su Heroku
+Il programma e' deployato al seguente link: [NESTAreas on Heroku](https://nestareas.herokuapp.com). L'applicazione in questione si collega a un database remoto le cui credenziali non sono pubblicate su git per ovvi motivi di sicurezza.

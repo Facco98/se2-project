@@ -26,7 +26,7 @@ module.exports.init = (envoirment) => {
       } else {
 
         responseObject.error = 'Access denied';
-        resp.status(302);
+        resp.status(401);
 
       }
 
@@ -84,7 +84,8 @@ module.exports.init = (envoirment) => {
       const isOverlap = await dbmanager.checkReservationOverlap(request.id_aula, request.inizio, request.durata);
 
       if(!isOverlap){ // se non c'è overlap
-        const nRowModified = await dbmanager.addRequest(request.id_utente, request.id_aula, request.motivazione, request.inizio, request.durata);
+        const user = await dbmanager.getUserFromMail(req.mailFromToken);
+        const nRowModified = await dbmanager.addRequest(user.id, request.id_aula, request.motivazione, request.inizio, request.durata);
 
         if (nRowModified != 0){
           resp.status(200).json({valid: true}); //invio risposta
@@ -99,7 +100,7 @@ module.exports.init = (envoirment) => {
     }catch(err){
       resp.status(500).json({valid: false, error: 'Internal Server Error'});
     }
-    
+
   });
 
 

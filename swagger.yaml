@@ -318,6 +318,9 @@ definitions:
       id_utente:
         type: integer
         description: The ID of the user who made the request
+      id_aula:
+        type: integer
+        description: The ID of the room which has been requested.
       motivazione:
         type: string
         description: The reason why the user requested the room
@@ -327,6 +330,13 @@ definitions:
       durata:
         type: object
         description: Tells you for how much time the user wants the room.
+    example:
+              id: 0
+              id_utente: 10
+              id_aula: 3
+              motivazione: 'Corso di aggiornamento'
+              inizio: '2019-2-11 14:00'
+              durata: '2 hours'
 
   Reservation:
     type: object
