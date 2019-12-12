@@ -3,9 +3,14 @@ const { Pool } = require('pg');
 
 async function createDBManager(){
 
-  // Creo il client e aspetto che si colleghi.
-  let client = new Pool();
-  await client.connect();
+  try{
+    // Creo il client e aspetto che si colleghi.
+    let client = new Pool();
+    await client.connect();
+    
+  }catch(err){
+    resp.status(500).json({valid: false, error: 'Internal Server Error'});
+  }
 
   let dbmanager = {
 

@@ -9,39 +9,44 @@ module.exports.init = (envoirment) => {
   // Creo l'handler per la richiesta get.
   app.get('/login/:mail', async (req, resp) => {
 
-    // Recupero username e password dalla richiesta.
-    let mail = req.params.mail;
-    let psw = req.query.password;
+    try{
 
-    // Chiedo al database layer di autenticare l'utente.
-    let logged = await dbmanager.loginUser(mail, psw);
+      // Recupero username e password dalla richiesta.
+      let mail = req.params.mail;
+      let psw = req.query.password;
 
-    // Creo l'oggetto risposta.
-    let responseObject = {
+      // Chiedo al database layer di autenticare l'utente.
+      let logged = await dbmanager.loginUser(mail, psw);
 
-      valid: logged
+      // Creo l'oggetto risposta.
+      let responseObject = {
 
-    };
+        valid: logged
+
+      };
 
 
-    if( logged ){
+      if( logged ){
 
-      // Fornisco il token di autenticazione
-      responseObject.authToken = envoirment.createToken(mail);
-      resp.status(200);
+        // Fornisco il token di autenticazione
+        responseObject.authToken = envoirment.createToken(mail);
+        resp.status(200);
 
-    } else {
+      } else {
 
-      // Rispondo con un errore.
-      responseObject.error = 'Username / password combination not found.';
-      resp.status(301);
+        // Rispondo con un errore.
+        responseObject.error = 'Username / password combination not found.';
+        resp.status(301);
 
+      }
+
+      // Invio la risposta.
+      resp.send(JSON.stringify(responseObject));
+
+    }catch(err){
+      resp.status(500).json({valid: false, error: 'Internal Server Error'});
     }
-
-    // Invio la risposta.
-    resp.send(JSON.stringify(responseObject));
-
-
+    
   });
 
 };
