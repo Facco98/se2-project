@@ -52,8 +52,9 @@ let checkToken = (req, res, next) => {
 // solo alle route corrette.
 let wrapper = (req, res, next) => {
 
+  const safePaths = ['/login/'];
   let contained = false;
-  for( let safePath of process.env.safePaths.split(',') ){
+  for( let safePath of safePaths ){
 
     contained = req.path.startsWith(safePath) || contained;
 

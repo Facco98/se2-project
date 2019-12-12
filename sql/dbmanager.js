@@ -11,6 +11,7 @@ async function createDBManager(){
 
   }catch(err){
     //resp.status(500).json({valid: false, error: 'Internal Server Error'});
+    console.log('Could not connect to database. Specify access data with PostgreSQL variables (PGHOST, PGPASSWORD, PGDATABASE, PGUSER).');
     process.exit(1);
   }
 
