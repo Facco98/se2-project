@@ -34,7 +34,7 @@ paths:
           description: The password of the user you want to authenticate.
       responses:
         200:
-          description: A response Object.
+          description: Successfull response
           schema:
             type: object
             properties:
@@ -48,7 +48,7 @@ paths:
               logged: true
               authToken: 'MySecretAuthToken'
         409:
-          description: A response Object.
+          description: An error occurred
           schema:
             type: object
             properties:
@@ -64,10 +64,10 @@ paths:
   /request/:
     get:
       summary: List requests
-      description: lists all pending requests
+      description: The list of all the pending requests (not yet approved). Only staff members are allowed to see the list of requests
       responses:
         200:
-          description: A response Object.
+          description: Successful response
           schema:
             type: object
             properties:
@@ -88,13 +88,13 @@ paths:
                   inizio: '2019-12-19 12:00'
                   durata: { 'hours': '2' }
         401:
-          description: A response Object.
+          description: An error occured
           schema:
             type: object
             properties:
               logged:
                 type: boolean
-                description: You aren't allowed.
+                description: The user is not allowed to see the list, which means the user is not a staff member.
               errorDescription:
                 type: string
                 description: The description of the error occurred.
@@ -141,7 +141,7 @@ paths:
             properties:
               logged:
                 type: boolean
-                description: You aren't allowed to do this.
+                description: The user is not allowed to do this
               errorDescription:
                 type: string
                 description: The description of the error occurred.
@@ -200,7 +200,7 @@ paths:
               errorDescription: 'Could not find the id supplied'
     delete:
       summary: Delete reservation
-      description: Deletes the reservation.
+      description: Deletes the reservation. Users can delete their own reservations, staff can delete any reservation.
       parameters:
         - in: path
           name: id
@@ -210,7 +210,7 @@ paths:
           description: The id of the reservation you want to delete.
       responses:
         200:
-          description: Successful response.
+          description: Successful response. The user was able to delete his reservation
           schema:
             type: object
             properties:
@@ -258,7 +258,7 @@ paths:
           required: true
           type: integer
           minimum: 1
-          description: The id of the room you want to see the list of reservazion.
+          description: The id of the room you want to see the list of reservation.
         - in: query
           name: inizio
           required: true
