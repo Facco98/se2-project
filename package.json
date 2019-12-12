@@ -1,0 +1,32 @@
+{
+  "name": "nestareas",
+  "version": "1.0.0",
+  "description": "A simple way to manage the common areas within NEST - Nuovo Studentato Trento",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "installDB": "dropdb --if-exists se2proj && createdb -h localhost se2proj && psql -h localhost -q -d se2proj < ./sql/create_table.sql",
+    "installDB-Win": "psql -c \"DROP DATABASE IF EXISTS se2proj; CREATE DATABASE se2proj;\" psql -h localhost -d se2proj < ./sql/create_table.sql",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Facco98/se2-project.git"
+  },
+  "author": "Francesco Arrighi, Federica Belotti, Claudio Facchinetti, Federica Ress, Guixia Zhu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Facco98/se2-project/issues"
+  },
+  "homepage": "https://github.com/Facco98/se2-project#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "node-fetch": "^2.6.0",
+    "pg": "^7.14.0"
+  },
+  "constants": {
+    "port": 8080,
+    "tokenLifeTime": "24h"
+  }
+}
