@@ -11,6 +11,7 @@ async function createDBManager(){
 
   }catch(err){
     //resp.status(500).json({valid: false, error: 'Internal Server Error'});
+    process.exit(1);
   }
 
   let dbmanager = {
