@@ -87,7 +87,7 @@ async function createDBManager(){
 
     listRequests: async () => {
 
-      const queryString = 'SELECT * FROM richiesta;';
+      const queryString = 'SELECT * FROM richiesta WHERE richiesta.id NOT IN ( SELECT prenotazione.id_richiesta FROM prenotazione );';
       let result = await client.query(queryString);
       return result.rows;
 
