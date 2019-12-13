@@ -22,12 +22,15 @@ Dopo aver clonato la repository, bisogna installare i componenti necessari.
     **Attenzione**: Al fine di usare questo metodo ci si assicuri che il comando `psql` sia accessibile dall'utente corrente e che sia garantito l'accesso al database utilizzando tale utente. Questo può essere fatto su Linux con il comando `sudo -u postgres createuser -s $USER`; questo non dovrebbe essere necessario su macOS nel caso in cui PostgreSQL sia stato installato tramite Homebrew.
 
   Per consentire la connessione al database e' necessario creare le variabili d'ambiente di PostgreSQL:
-    `bash
+    `
     export PGHOST=host
     export PGDATABASE=se2proj
     export PGUSER=user
     export PGPASSWORD=passwordDellUtente
     `
+  - #### Creare il segreto per il token
+  Affinche il codice funzione e' necessarion fornire un segreto per la gestione dei JSON Web Token, bisogna quindi creare una variabile d'ambiente apposita: ```export TokenSecret=UnTokenSecretInviolabile```
+  `
 
 ### Lanciare il progetto
 Per lanciare il progetto è sufficiente usare il comando `npm start`.
