@@ -88,7 +88,7 @@ module.exports.init = (envoirment) => {
       let reservation_id = req.params.id;
 
       let responseObject = {
-        valid: isStaff != false
+        valid: true
       };
 
       const reservation = await dbmanager.reservationInfo(reservation_id);
@@ -108,6 +108,7 @@ module.exports.init = (envoirment) => {
 
       } else {
 
+        responseObject.valid = false;
         responseObject.error = 'Reservation ID is not valid.';
         resp.status(400);
 
@@ -119,5 +120,24 @@ module.exports.init = (envoirment) => {
     }
 
   });
+
+  app.get('/reservation/', async (req, resp) => {
+    try{
+
+      let mail = req.mailFromToken;
+      let user = await dbmanager.getUserFromMail(mail);
+      let userID = user.id;
+      let reservations = await dbmanager.listUserReservation(userID);
+      console.log(reservations)
+
+      resp.status(200).json({valid: true, list: reservations});
+
+    }catch(err){
+      console.log(err);
+      resp.status(500).json({valid: false, error: 'Internal Server Error'});
+    }
+
+  });
+
 
 };

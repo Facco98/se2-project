@@ -246,6 +246,14 @@ async function createDBManager(){
 
     },
 
+    listUserReservation: async (userID) => {
+
+      const queryString = 'SELECT prenotazione.id, prenotazione.motivazione, prenotazione.inizio, prenotazione.durata FROM prenotazione JOIN richiesta ON prenotazione.id_richiesta = richiesta.id WHERE richiesta.id_utente = $1';
+      let result = await client.query(queryString, [userID]);
+      return result.rows;
+
+    },
+
     listReservationByIdInterval: async (roomID, beginning = null, lapse = null, isStaff) => {
 
       let queryString = '';

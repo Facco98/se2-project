@@ -383,6 +383,48 @@ paths:
                 valid: false
                 error: 'Interval server error.'
 
+  /reservation/:
+    get:
+      summary: List my reservations
+      description: Returns a list of the reservations made by the user
+      responses:
+        200:
+          description: Successful response.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if the request was valid or not.
+              list:
+                type: array
+                items:
+                    $ref: '#/definitions/Reservation'
+                description: Tells you the reservations currently registered and accepted.
+            example:
+              valid: true
+              list:
+                - motivazione: 'Tutorato matematica'
+                  inizio: '2019-12-10 12:00'
+                  durata: { 'hours': '2' }
+                - motivazione: 'Tutorato economia'
+                  inizio: '2019-10-10 14:00'
+                  durata: { 'hours': '3' }
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
+
   /reservation/room/{id_aula}:
     get:
       summary: List Reservations
@@ -480,12 +522,12 @@ definitions:
         type: object
         description: Tells you for how much time the user wants the room.
     example:
-              id: 0
-              id_utente: 10
-              id_aula: 3
-              motivazione: 'Corso di aggiornamento'
-              inizio: '2019-2-11 14:00'
-              durata: '2 hours'
+      id: 0
+      id_utente: 10
+      id_aula: 3
+      motivazione: 'Corso di aggiornamento'
+      inizio: '2019-2-11 14:00'
+      durata: '2 hours'
 
   Reservation:
     type: object
