@@ -15,12 +15,12 @@ module.exports.init = (envoirment) => {
       const userId = user.id; //recupero l'id dell'utente
 
       //controllo se prenotazione esiste
-      const reservation = await dbmanager.getReservation(reservationID);
+      const reservation = await dbmanager.reservationInfo(reservationID);
 
       if(reservation != false) //se c'è -> controllo se utente è giusto
       {
         let isStaff = await dbmanager.checkStaff(mail) != false;
-        if(reservation.id_utente == userId || (isStaff)) //controllo l'utente
+        if(reservation.utenteid == userId || (isStaff)) //controllo l'utente
         {
           await dbmanager.removeReservation(reservationID); //elimino prenotazione
           resp.status(200).json({valid: true}); //invio risposta
@@ -36,6 +36,7 @@ module.exports.init = (envoirment) => {
       }
 
     }catch(err){
+      console.log(err);
       resp.status(500).json({valid: false, error: 'Internal Server Error'});
     }
 
@@ -99,7 +100,7 @@ module.exports.init = (envoirment) => {
 
         } else {
 
-          responseObject.reservation = {motivazione: reservation.staffMotivazione, inizio: reservation.inizioP, durata: reservation.durataP};
+          responseObject.reservation = {motivazione: reservation.staffmotivazione, inizio: reservation.iniziop, durata: reservation.duratap};
 
         }
 

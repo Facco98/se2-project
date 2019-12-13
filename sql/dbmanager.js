@@ -108,6 +108,8 @@ async function createDBManager(){
       if (lapse == false) {
         lapse = request.durata;
       }
+      if( reason == "" )
+        reason = request.motivazione;
       if( request ){
         const queryString = 'INSERT INTO prenotazione(id_staff, id_richiesta, motivazione, id_aula, inizio, durata) VALUES($1, $2, $3, $4, $5, $6);'
         let res = await client.query(queryString, [staffID, requestID, reason, idRoom, request.inizio, request.durata]);
@@ -198,9 +200,18 @@ async function createDBManager(){
 
     removeReservation: async (reservationID) => {
 
-      const queryString = 'DELETE FROM prenotazione WHERE id = $1;'
-      let result = await client.query(queryString, [reservationID]);
-      return result.rowCount;
+      const queryStringGetR = "SELECT prenotazione.id_richiesta FROM prenotazione WHERE prenotazione.id = $1;";
+      let result = await client.query(queryStringGetR, [reservationID]);
+      if( result.rows.length == 1 ){
+        const rID = result.rows[0].id_richiesta;
+        let queryStringDeleteP = 'DELETE FROM prenotazione WHERE id = $1;';
+        let queryStringDeleteR = 'DELETE FROM richiesta WHERE id = $1';
+        result = await client.query(queryStringDeleteP, [reservationID]);
+        await client.query(queryStringDeleteR, [rID]);
+        return result.rowCount;
+      } else {
+        return false;
+      }
 
     },
 
