@@ -61,6 +61,20 @@ paths:
             example:
               logged: false
               errorDescription: 'Wrong username / password combination'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
   /request/:
     get:
       summary: List requests
@@ -101,6 +115,20 @@ paths:
             example:
               logged: false
               errorDescription: 'The token supplied is not valid.'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
     post:
       summary: Submit a request
       description: Creating a Request
@@ -148,7 +176,86 @@ paths:
             example:
               valid: false
               errorDescription: 'The token supplied is not valid.'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
 
+  /request/{id}:
+    patch:
+      summary: Accept a request
+      description: Accepts a specific request and deletes all the requests which overlap. The user must be a staff member.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          minimum: 1
+          description: The id of the request you want to accept.
+      responses:
+        200:
+          description: Successful response.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if you can view the details of the reservation.
+            example:
+              valid: true
+        400:
+          description: Something was wrong with your request.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+                description: Tells you if you can view the details of the reservation.
+              error:
+                type: string
+                description: Description of the error occurred.
+            example:
+              valid: false
+              error: 'Bad request'
+
+        401:
+          description: Unauthorized access.
+          schema:
+            type: object
+            properties:
+                valid:
+                  type: boolean
+                  description: Tells you if the request was valid or not.
+                error:
+                  type: string
+                  description: The description of the error occurred.
+            example:
+              valid: false
+              error: 'The token supplied is not valid.'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
 
   /reservation/{id}:
     get:
@@ -198,6 +305,20 @@ paths:
             example:
               valid: false
               errorDescription: 'Could not find the id supplied'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
     delete:
       summary: Delete reservation
       description: Deletes the reservation. Users can delete their own reservations, staff can delete any reservation.
@@ -247,6 +368,20 @@ paths:
             example:
               valid: false
               errorDescription: 'We could not find the specified id.'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
 
   /reservation/room/{id_aula}:
     get:
@@ -308,6 +443,20 @@ paths:
             example:
               valid: false
               errorDescription: 'Could not find the id specified'
+        500:
+          description: Something went wrong.
+          schema:
+              type: object
+              properties:
+                  valid:
+                    type: boolean
+                    description: Tells you if the request was valid or not.
+                  error:
+                    type: string
+                    description: The description of the error occurred.
+              example:
+                valid: false
+                error: 'Interval server error.'
 definitions:
   Request:
     type: object

@@ -5,7 +5,7 @@ module.exports.init = (envoirment) => {
   let dbmanager = envoirment.db;
 
   // Creo l'handler per la richiesta GET.
-  app.get('/requests/', async (req, resp) => {
+  app.get('/request/', async (req, resp) => {
 
     try{
 
@@ -39,7 +39,7 @@ module.exports.init = (envoirment) => {
   });
 
   // Creo l'handler per la richiesta patch.
-  app.patch('/requests/:id', async (req, resp) => {
+  app.patch('/request/:id', async (req, resp) => {
 
     try{
 
@@ -54,32 +54,43 @@ module.exports.init = (envoirment) => {
 
         let result = await dbmanager.acceptRequest(requestID, staff);
         responseObject.valid = result;
-
-        resp.status(200);
+        if( result )
+          resp.status(200);
+        else {
+          resp.status(400);
+          responseObject.error = 'Bad request';
+        }
 
 
       } else {
 
         responseObject.valid = false;
         responseObject.error = 'Access denied.';
-        resp.status(302);
+        resp.status(401);
 
       }
       resp.json(responseObject);
 
     }catch(err){
+      console.log(err);
       resp.status(500).json({valid: false, error: 'Internal Server Error'});
     }
 
   });
 
   // prenotazione aula
-  app.post('/requests/', async(req, resp) => {
+  app.post('/request/', async(req, resp) => {
 
     try{
 
       const request = req.body; // body json della richiesta
 
+      if( !request ){
+
+        resp.status(400).json({valid: false, error: 'Payload not declared to be JSON or is not valid'});
+        return;
+
+      }
       // controllo se c'è overlap della prenotazione con quelli già esistenti
       const isOverlap = await dbmanager.checkReservationOverlap(request.id_aula, request.inizio, request.durata);
 
@@ -98,7 +109,8 @@ module.exports.init = (envoirment) => {
       }
 
     }catch(err){
-      resp.status(500).json({valid: false, error: 'Internal Server Error'});
+      console.log(err);
+      resp.status(400).json({valid: false, error: 'Bad request'});
     }
 
   });
