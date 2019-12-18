@@ -79,6 +79,11 @@ paths:
     get:
       summary: List requests
       description: The list of all the pending requests (not yet approved). Only staff members are allowed to see the list of requests
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
       responses:
         200:
           description: Successful response
@@ -137,6 +142,10 @@ paths:
           name: body
           schema:
             $ref: '#/definitions/Request'
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successfull response.
@@ -202,6 +211,10 @@ paths:
           type: integer
           minimum: 1
           description: The id of the request you want to accept.
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successful response.
@@ -268,6 +281,10 @@ paths:
           type: integer
           minimum: 1
           description: The id of the reservation you want to view.
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successful response.
@@ -329,6 +346,10 @@ paths:
           type: integer
           minimum: 1
           description: The id of the reservation you want to delete.
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successful response. The user was able to delete his reservation
@@ -387,6 +408,11 @@ paths:
     get:
       summary: List my reservations
       description: Returns a list of the reservations made by the user
+      parameters:
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successful response.
@@ -448,6 +474,10 @@ paths:
           type: string
           minimum: 1
           description: The lapse of the interval.
+        - in: header
+          name: Authentication
+          type: string
+          required: true
       responses:
         200:
           description: Successful response.
